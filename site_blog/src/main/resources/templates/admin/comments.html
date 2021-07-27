@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="admin/header::header"></div>
+<body class="skin-black-light sidebar-mini">
+<div class="wrapper">
+    <!--头-->
+    <div th:replace="admin/sidebar::sidebar"></div>
+    <!-- 内容页 -->
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h3>
+                评论管理
+            </h3>
+            <!--<ol class="breadcrumb">-->
+            <!--<li><a href="#"><i class="fa fa-dashboard"></i> </a></li>-->
+            <!--<li class="active">Dashboard</li>-->
+            <!--</ol>-->
+        </section>
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">列表</h3>
+
+                            <div class="box-tools">
+                                <div class="input-group input-group-sm" style="width: 220px;">
+                                    <input type="text" name="table_search" class="form-control pull-right" placeholder="Search">
+
+                                    <div class="input-group-btn">
+                                        <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body table-responsive no-padding">
+                            <table class="table table-hover">
+                                <tbody>
+                                <tr>
+                                    <th>评论内容	</th>
+                                    <th>评论人</th>
+                                    <th>评论时间</th>
+                                    <th>评论人邮箱</th>
+                                    <th>评论人网址</th>
+                                    <th>评论状态	</th>
+                                    <th>操作</th>
+                                </tr>
+                                <th:block th:each="comm : ${comments.list}">
+                                    <tr>
+                                        <td>
+                                            <th:block th:text="${comm.content}"/>
+                                        </td>
+                                        <td>
+                                            <th:block th:text="${comm.author}"/>
+                                        </td>
+                                        <td>
+                                            <th:block th:text="${commons.fmtdate(comm.created, 'yyyy-MM-dd HH:mm:ss')}"/>
+                                        </td>
+                                        <td>
+                                            <th:block th:text="${comm.mail}"/>
+                                        </td>
+                                        <td>
+                                            <th:block th:text="${comm.url}"/>
+                                        </td>
+                                        <td>
+                                            <th:block th:if="${comm.status == '1'}">
+                                                <span class="label label-success">已回复</span>
+                                            </th:block>
+                                            <th:block th:if="${comm.status == '0'}">
+                                                <span class="label label-danger">未读</span>
+                                            </th:block>
+                                        </td>
+                                        <td>
+                                            <a th:onclick="'openModule('+${comm.cid}+','+${comm.coid}+')'" class="btn btn-default btn-sm" href="#" title="回复">
+                                                <i class="fa fa-edit"></i>回复
+                                            </a>
+                                            <a th:onclick="'delComments('+${comm.coid}+')'" class="btn btn-danger btn-sm" href="#" title="删除">
+                                                <i class="fa fa-trash-o"></i>删除
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </th:block>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="box-footer clearfix">
+                            <div th:replace="comm/macros :: pageAdminNav(${comments})"></div>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+            </div>
+        </section>
+    </div>
+    <!-- 底部 -->
+    <div th:replace="admin/footer::footer"></div>
+</div>
+</body>
+<script>
+    layui.use('layer', function() {
+    });
+    function delComments(id) {
+        layer.confirm('删除这条评论？', {
+            btn: ['是','否'] //按钮
+        }, function(){
+            $.ajax({
+                url: '/admin/comments/delete',
+                method: "POST",
+                data: {"id": id},
+                success: function (result) {
+                    location.reload();
+                }
+            })
+        }, function(){
+        });
+    }
+    function openModule(cid,coid) {
+        var index = layer.open({
+            title:'回复',
+            type: 2,
+            content: '/article/'+cid+'#comment-'+coid,
+            area: ['600px',$(window).height() +'px' ],
+            maxmin: true,
+            anim: 5,
+        });
+        layer.full(index);
+    }
+</script>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="admin/header::header"></div>
+<body class="skin-black-light sidebar-mini">
+<div class="wrapper">
+    <!--头-->
+    <div th:replace="admin/sidebar::sidebar"></div>
+    <!-- 内容页 -->
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h3>
+                文章管理
+            </h3>
+            <!--<ol class="breadcrumb">-->
+            <!--<li><a href="#"><i class="fa fa-dashboard"></i> </a></li>-->
+            <!--<li class="active">Dashboard</li>-->
+            <!--</ol>-->
+        </section>
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">列表</h3>
+
+                            <div class="box-tools">
+                                <div class="input-group input-group-sm" style="width: 220px;">
+                                    <input type="text" name="table_search" class="form-control pull-right" placeholder="Search">
+
+                                    <div class="input-group-btn">
+                                        <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body table-responsive no-padding">
+                            <table class="table table-hover">
+                                <tbody>
+                                    <tr>
+                                        <th>文章标题</th>
+                                        <th>发布时间</th>
+                                        <th>浏览量</th>
+                                        <th>所属分类</th>
+                                        <th>发布状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    <th:block th:each="post : ${articles.list}">
+                                        <tr th:cid="${post.cid}">
+                                            <td>
+                                                <a th:href="@{'/article/'+${post.cid}}" th:text="${post.title}"></a>
+                                            </td>
+                                            <td><th:block th:text="${commons.fmtdate(post.created, 'yyyy-MM-dd HH:mm:ss')}"/></td>
+                                            <td><th:block th:text="${post.hits}"/></td>
+                                            <td><th:block th:text="${post.categories}"/></td>
+                                            <td>
+                                                <th:block th:if="${post.status == 'publish'}">
+                                                    <span class="label label-success">已发布</span>
+                                                </th:block>
+                                                <th:block th:if="${post.status == 'draft'}">
+                                                    <span class="label label-default">草稿</span>
+                                                </th:block>
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-default btn-sm" th:href="@{'/admin/articles/edit/'+${post.cid}}" title="编辑"><i class="fa fa-edit"></i>编辑</a>
+                                                <a th:onclick="'delArtcle('+${post.cid}+')'" class="btn btn-danger btn-sm" href="#" title="删除">
+                                                    <i class="fa fa-trash-o"></i>删除
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </th:block>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="box-footer clearfix">
+                            <div th:replace="comm/macros :: pageAdminNav(${articles})"></div>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+            </div>
+        </section>
+    </div>
+    <!-- 底部 -->
+    <div th:replace="admin/footer::footer"></div>
+</div>
+</body>
+<script>
+    layui.use('layer', function() {
+    });
+    function delArtcle(id) {
+        layer.confirm('删除这篇文章？', {
+            btn: ['是','否'] //按钮
+        }, function(){
+            $.ajax({
+                url: '/admin/articles/delete',
+                method: "POST",
+                data: {"id": id},
+                success: function (result) {
+                    if(result.success){
+                        location.reload();
+                    }else{
+                        layer.msg(result.msg, {icon: 2})
+                    }
+                }
+            })
+        }, function(){});
+    }
+</script>
+</html>

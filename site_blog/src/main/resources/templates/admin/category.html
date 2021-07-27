@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="admin/header::header"></div>
+<body class="skin-black-light sidebar-mini">
+<div class="wrapper">
+    <!--头-->
+    <div th:replace="admin/sidebar::sidebar"></div>
+    <!-- 内容页 -->
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h3>
+                类型管理
+            </h3>
+        </section>
+        <section class="content">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="panel panel-success">
+                        <div class="panel-heading">
+                            <h1 class="panel-title">分类列表</h1>
+                        </div>
+                        <div class="panel-body">
+                            <th:block th:each="cate : ${category}">
+                            <div class="btn-group m-b-10">
+                                <button type="button" th:class="'btn btn-'+${commons.rand_color()}+' dropdown-toggle waves-effect waves-light'"
+                                        data-toggle="dropdown" th:text="${cate.metas.name}+'('+${cate.count}+')'" aria-expanded="false">
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li>
+                                        <a th:onclick="'editCategory('+${cate.metas.mid}+',\''+${cate.metas.name}+'\')'" href="javascript:void(0)" class="edit-category">修改</a>
+                                    </li>
+                                    <li>
+                                        <a th:onclick="'delCate('+${cate.metas.mid}+',\'cate\')'" href="javascript:void(0)" class="del-category">删除</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            </th:block>
+                        </div>
+                    </div>
+                    <!-- /.box -->
+                </div>
+                <div class="col-md-6">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <h1 class="panel-title">标签列表</h1>
+                        </div>
+                        <div class="panel-body">
+                            <th:block th:each="tag : ${tags}">
+                            <div class="btn-group m-b-10">
+                                <button type="button" th:class="'btn btn-'+${commons.rand_color()}+' dropdown-toggle waves-effect waves-light'"
+                                        data-toggle="dropdown" th:text="${tag.metas.name}+'('+${tag.count}+')'" aria-expanded="false">
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a th:onclick="'delCate('+${tag.metas.mid}+',\'tag\')'" href="javascript:void(0)" mid="20" class="del-category">删除</a></li>
+                                </ul>
+                            </div>
+                            </th:block>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <form id="cform" class="form-inline" role="form">
+                                <input type="hidden" id="mid">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="cname" placeholder="请输入分类名称">
+                                </div>
+                                <button onclick="saveCategory()" id="save-category-btn" type="button"
+                                        class="btn btn-success waves-effect waves-light m-l-10">
+                                    保存分类
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <!-- 底部 -->
+    <div th:replace="admin/footer::footer"></div>
+</div>
+</body>
+<script>
+    layui.use('layer', function() {
+    });
+    function editCategory(id,name) {
+        $("#mid").val(id);
+        $("#cname").val(name);
+    }
+    function saveCategory() {
+        var mid = $("#mid").val();
+        var url = mid == '' ? '/admin/category/add' : '/admin/category/update';
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: {
+                mid: $("#mid").val(),
+                name: $("#cname").val(),
+            },
+            success: function (result) {
+                if (result.success) {
+                    location.reload();
+                } else {
+                    layer.msg(result.msg, {icon: 2})
+                }
+            }
+        })
+    }
+
+    function delCate(id,type) {
+        var url = type == 'cate' ? '/admin/category/deleteCate':'/admin/category/deleteTag';
+        layer.confirm('是否删除？', {
+            btn: ['是','否'] //按钮
+        }, function(){
+            $.ajax({
+                url: url,
+                method: "POST",
+                data: {"id": id},
+                success: function (result) {
+                    if(result.success){
+                        location.reload();
+                    }else{
+                        layer.msg(result.msg, {icon: 2})
+                    }
+                }
+            })
+        }, function(){});
+    }
+</script>
+</html>

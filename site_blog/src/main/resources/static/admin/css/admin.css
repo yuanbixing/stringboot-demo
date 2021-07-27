@@ -1,0 +1,18 @@
+.table th, .table td {
+    text-align: center;
+    vertical-align: middle!important;
+}
+
+.m-b-10{
+    margin-bottom : 15px;
+}
+.attach-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 8px #333;
+}
+
+.m-t-10 {
+    margin-top: 10px!important;
+}

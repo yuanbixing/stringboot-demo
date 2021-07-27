@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="admin/header::header"></div>
+<body class="skin-black-light sidebar-mini">
+<div class="wrapper">
+    <!--头-->
+    <div th:replace="admin/sidebar::sidebar"></div>
+    <!-- 内容页 -->
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h3>
+                文件管理
+            </h3>
+            <!--<ol class="breadcrumb">-->
+            <!--<li><a href="#"><i class="fa fa-dashboard"></i> </a></li>-->
+            <!--<li class="active">Dashboard</li>-->
+            <!--</ol>-->
+        </section>
+        <section class="content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box box-info">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">上传</h3>
+                        </div>
+                        <!-- form start -->
+                        <form class="form-horizontal">
+                            <div class="box-body">
+                                <div class="col-md-12">
+                                    <div class="layui-upload-drag" id="file">
+                                        <i class="layui-icon"></i>
+                                        <p>点击上传，或将文件拖拽到此处</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="box box-info">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">列表</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <!-- form start -->
+                        <form class="form-horizontal">
+                            <div class="box-body">
+                                <th:block th:each="attach : ${attachs.list}">
+                                <div class="col-md-2 text-center m-t-10">
+                                    <a th:href="'../files/'+${attach.fkey}" target="_blank">
+                                        <img class="attach-img" th:src="'../files/'+${attach.fkey}" th:title="${attach.fname}">
+                                    </a>
+                                    <div class="clearfix m-t-10">
+                                        <span class="attach-text" th:text="${attach.fname}" data-toggle="tooltip" data-placement="top" th:data-original-title="${attach.fname}"></span>
+                                    </div>
+                                    <div class="clearfix">
+                                        <button th:attr="url=${commons.site_url()}+'/files/'+${attach.fkey}" type="button" class="btn btn-warning btn-sm waves-effect waves-light m-t-5 copy">
+                                            <i class="fa fa-copy"></i> <span>复制</span>
+                                        </button>
+                                        <button th:onclick="'deleteFile('+${attach.id}+')'" type="button" class="btn btn-danger btn-sm waves-effect waves-light m-t-5" onclick="delAttach(10);">
+                                            <i class="fa fa-trash-o"></i> <span>删除</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                </th:block>
+                            </div>
+                            <!-- /.box-body -->
+                            <div class="box-footer">
+                                <div th:replace="comm/macros :: pageAdminNav(${attachs})"></div>
+                            </div>
+                            <!-- /.box-footer -->
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <!-- 底部 -->
+    <div th:replace="admin/footer::footer"></div>
+</div>
+</body>
+<script src="//cdn.bootcss.com/clipboard.js/1.6.0/clipboard.min.js"></script>
+<script>
+    layui.use('upload', function(){
+        var upload = layui.upload;
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#file', //绑定元素
+            url: '/admin/files/upload' ,//上传接口
+            done: function(res){
+                //上传完毕回调
+                if(res.success){
+                    location.href = "/admin/files";
+                }else{
+                    layer.msg(res.msg,{icon:2})
+                }
+            }
+            ,error: function(){
+                //请求异常回调
+            }
+        });
+    });
+
+    var clipboard = new Clipboard('button.copy', {
+        text: function (trigger) {
+            return $(trigger).attr('url');
+        }
+    });
+    clipboard.on('success', function (e) {
+        layer.msg("复制成功",{icon:1})
+    });
+    
+    function deleteFile(id) {
+        $.ajax({
+            url:'/admin/files/delete',
+            method:'POST',
+            data:{id:id},
+            success:function (res) {
+                if(res.success){
+                    location.href = "/admin/files";
+                }else{
+                    layer.msg(res.msg,{icon:2})
+                }
+            }
+        })
+    }
+</script>
+</html>

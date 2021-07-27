@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="social">
+<body>
+<div class="social-list">
+    <a class="social weibo" target="blank" th:href="${commons.social_link('weibo')}">微博</a>
+    <a class="social zhihu" target="blank" th:href="${commons.social_link('zhihu')}">知乎</a>
+    <a class="social rss" target="blank" th:href="${commons.site_url('/feed')}">RSS</a>
+    <a class="social github" target="blank" th:href="${commons.social_link('github')}">Github</a>
+    <a class="social twitter" target="blank" th:href="${commons.social_link('twitter')}">Twitter</a>
+</div>
+</body>
+</html>

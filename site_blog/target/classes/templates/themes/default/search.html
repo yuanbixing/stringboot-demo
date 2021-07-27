@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:replace="partial/header::header" ></div>
+<div class="main-content page-page clearfix">
+    <div class="search-page">
+        <form id="search" class="search-form" method="post" role="search">
+            <span class="search-box clearfix">
+                <input type="text" id="search-inp" class="input" required="true" placeholder="Search..." maxlength="30" autocomplete="off">
+                <button type="submit" class="spsubmit">
+                    <i class="icon-search"></i>
+                </button>
+            </span>
+        </form>
+        <div class="search-tags">
+            <p>👇 The following tabs can help you!</p>
+            <th:block th:each="meta : ${metas}">
+                <a th:href="${commons.site_url('/tag/')}+${meta.metas.name}" class="bg-white" th:text="${meta.metas.name}+'('+${meta.count}+')'"></a>
+            </th:block>
+            <div class="search-tags-hr bg-deepgrey"></div>
+            <p th:if="${metas}==null">暂时还没有记录哟!</p>
+        </div>
+    </div>
+</div>
+</body>
+<div th:replace="partial/footer::footer" ></div>
+</html>

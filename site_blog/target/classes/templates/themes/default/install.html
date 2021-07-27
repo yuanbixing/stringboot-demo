@@ -1,0 +1,127 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-transform"/>
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <link rel="shortcut icon" th:href="@{/img/favicon.png}"/>
+    <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <script src="//cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script>
+    <script th:src="@{/admin/layui/layui.js}" charset="utf-8"></script>
+    <link href="//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/themes/css/xcode.min.css}" rel="stylesheet">
+    <link th:href="@{/themes/css/style.min.css}" rel="stylesheet">
+    <link th:href="@{/themes/css/install.css}" rel="stylesheet">
+    <title></title>
+</head>
+<body class="bg-grey">
+<header id="header" class="header bg-white">
+    <div class="navbar-container">
+        <a th:href="${commons.site_url()}" class="navbar-logo">
+            <img th:src="@{/themes/img/logo.png}" alt=""/>
+            <!--<img src="${logo_url')}" alt="${site_title()}"/>-->
+        </a>
+        <div class="navbar-menu">
+            <a href="javascript:void(0)">后台管理</a>
+        </div>
+        <a href="javascript:void(0)" class="navbar-search">
+            <!--<span class="icon-search"></span>-->
+        </a>
+        <div class="navbar-mobile-menu" onclick="">
+            <span class="icon-menu cross"><span class="middle"></span></span>
+            <ul>
+                <li><a href="javascript:void(0)">后台管理</a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+<article class="main-content page-page" itemscope="" itemtype="http://schema.org/Article">
+    <div class="post-header">
+        <h1 class="post-title" itemprop="name headline"> 网站基本设置 </h1>
+        <div class="post-data">
+            <time datetime="2018-04-01T00:33:00+08:00" itemprop="datePublished">
+               欢迎使用SITE BLOG ！
+            </time>
+        </div>
+    </div>
+    <p class="post-tags"></p>
+    <form id="installForm">
+        <div id="post-content" class="post-content" itemprop="articleBody">
+            <p class="ap">
+                <b>* 网站名称</b>
+                <input type="text" class="in" id="siteName" name="siteName"/>
+                <span class="warns">请输入网站名称,将显示在网页标题处</span>
+            </p>
+            <p class="ap">
+                <b>* 网站地址</b>
+                <input type="text" class="in" id="siteUrl" name="siteUrl"/>
+                <span class="warns">请输入网站地址，未绑定域名则输入http://ip:port</span>
+            </p>
+            <p class="ap">
+                <b>管理员邮箱</b>
+                <input type="email" class="in" id="email" name="email"/>
+                <span class="warns">请输入管理员邮箱</span>
+            </p>
+            <p class="ap">
+                <b>* 管理员账号</b>
+                <input type="text" class="in" id="account" name="account"/>
+                <span class="warns">请输入管理员账号</span>
+            </p>
+            <p class="ap">
+                <b>* 管理员密码</b>
+                <input type="password" class="in" id="password" name="password"/>
+                <span class="warns">请输入6-14位管理员密码</span>
+            </p>
+            <p class="ap">
+                <b>* 确认管理员密码</b>
+                <input type="password" class="in" id="confirmPwd" name="confirmPwd"/>
+                <span class="warns">请确认管理员密码</span>
+            </p>
+            <p>
+                <input type="button" value="保存设置" class="sumbits" onclick="saveSetting()"/>
+            </p>
+        </div>
+    </form>
+</article>
+<footer id="footer" class="footer bg-white">
+    <div class="footer-meta">
+        <div class="footer-container">
+            <div class="meta-item meta-copyright">
+                <div class="meta-copyright-info">
+                    <!--<a th:href="${commons.site_url()}" class="info-logo"></a>-->
+                    <div class="info-text">
+                        <p id="yangxs"></p>
+                        <p>Powered by
+                            &copy; 2019 <a href="javascript:void(0);">SITE BLOG</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
+<script>
+    layui.use('layer', function() {
+    });
+    function saveSetting() {
+        $.ajax({
+            url: '/install/save',
+            method: "POST",
+            data: $("#installForm").serializeArray(),
+            success: function (result) {
+                if(result.success){
+                    layer.msg(result.msg, {icon: 1})
+                    window.location.href = "/";
+                }else{
+                    layer.msg(result.msg, {icon: 2})
+                }
+            }
+        })
+    }
+</script>

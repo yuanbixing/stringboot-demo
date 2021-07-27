@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="admin/header::header"></div>
+<body class="skin-black-light sidebar-mini">
+<div class="wrapper">
+    <!--头-->
+    <div th:replace="admin/sidebar::sidebar"></div>
+    <!-- 内容页 -->
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h3>
+                系统设置
+            </h3>
+        </section>
+        <section class="content">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="box box-info">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">站点设置</h3>
+                            <div class="box-tools">
+                                <div class="input-group input-group-sm" style="width: 220px;">
+                                    <div class="input-group-btn">
+                                        <a href="/admin/setting/backup" type="button" class="btn btn-primary pull-right">导出DB</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.box-header -->
+                        <!-- form start -->
+                        <form id="siteForm" class="form-horizontal">
+
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">网站地址</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" name="site_url" th:value="${options.site_url}" class="form-control" placeholder="网站地址">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">站点标题</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" name="site_title" th:value="${options.site_title}" class="form-control"  placeholder="站点标题">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">使用主题</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" name="site_theme" th:value="${options.site_theme}" class="form-control" placeholder="站点子标题">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">站点描述</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" name="site_description" th:value="${options.site_description}" class="form-control" placeholder="站点描述">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">站点关键词</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" name="site_keywords" th:value="${options.site_keywords}" class="form-control" placeholder="站点关键词">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                </div>
+                            </div>
+                            <!-- /.box-body -->
+                            <div class="box-footer">
+                                <button type="button" onclick="saveSite()" class="btn btn-primary pull-right">保存设置</button>
+                            </div>
+                            <!-- /.box-footer -->
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="box box-info">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">个性化设置</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <!-- form start -->
+                        <form id="proForm" class="form-horizontal">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">微博账号</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" name="social_weibo" th:value="${options.social_weibo}" class="form-control" placeholder="微博账号，不输入则不显示">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">知乎账号</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" name="social_zhihu" th:value="${options.social_zhihu}" class="form-control"  placeholder="知乎账号，不输入则不显示">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputPassword3" class="col-sm-2 control-label">GitHub账号</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" name="social_github" th:value="${options.social_github}" class="form-control" id="inputPassword3" placeholder="知乎账号，不输入则不显示">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Twitter账号</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" name="social_twitter" th:value="${options.social_twitter}" class="form-control" placeholder="Twitter账号，不输入则不显示">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                </div>
+                            </div>
+                            <!-- /.box-body -->
+                            <div class="box-footer">
+                                <button onclick="savePro()" type="button" class="btn btn-primary pull-right">保存设置</button>
+                            </div>
+                            <!-- /.box-footer -->
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <!-- 底部 -->
+    <div th:replace="admin/footer::footer"></div>
+</div>
+</body>
+<script>
+    layui.use('layer', function() {
+    });
+
+    /**
+     * 保存网站设置
+     */
+    function saveSite() {
+        var param = $('#siteForm').serialize();
+        $.ajax({
+            url: '/admin/setting/saveSite',
+            method: "POST",
+            data: param,
+            success: function (result) {
+                if(result.success){
+                    layer.msg(result.msg, {icon: 1})
+                }else{
+                    layer.msg(result.msg, {icon: 2})
+                }
+            }
+        })
+    }
+    function savePro() {
+        var param = $('#proForm').serialize();
+        $.ajax({
+            url: '/admin/setting/savePro',
+            method: "POST",
+            data: param,
+            success: function (result) {
+                if(result.success){
+                    layer.msg(result.msg, {icon: 1})
+                }else{
+                    layer.msg(result.msg, {icon: 2})
+                }
+            }
+        })
+    }
+</script>
+</html>

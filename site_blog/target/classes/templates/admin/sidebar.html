@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="sidebar">
+<body>
+<aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+        <!-- search form -->
+        <form method="get" class="sidebar-form" id="sidebar-form">
+            <div class="input-group">
+                <input type="text" name="q" class="form-control" placeholder="Search..." id="search-input">
+                <span class="input-group-btn">
+                    <button type="submit" name="search" id="search-btn" class="btn btn-flat">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </span>
+            </div>
+        </form>
+        <!-- /.search form -->
+
+        <!-- Sidebar Menu -->
+        <ul class="sidebar-menu tree" data-widget="tree">
+            <li class="header">菜单栏</li>
+            <li th:class="${active}=='index'?'active':''">
+                <a href="/admin/index"><i class="fa fa-dashboard"></i>
+                    <span>仪表盘</span>
+                </a>
+            </li>
+            <li th:class="${active}=='edit'?'active':''">
+                <a href="/admin/articles/goPublish"><i class="fa fa-pencil-square-o"></i>
+                    <span>发布文章</span></a>
+            </li>
+            <li th:class="${active}=='articles'?'active':''">
+                <a href="/admin/articles"><i class="fa fa-list"></i>
+                    <span>文章管理</span></a>
+            </li>
+            <li th:class="${active}=='pages'?'active':''">
+                <a href="/admin/pages"><i class="fa fa-file-text"></i>
+                    <span>页面管理</span></a>
+            </li>
+            <li th:class="${active}=='files'?'active':''">
+                <a href="/admin/files"><i class="fa fa-cloud-upload"></i>
+                    <span>文件管理</span></a>
+            </li>
+            <li th:class="${active}=='true'?'treeview menu-open':'treeview'">
+                <a href="javascript:void(0)"><i class="fa fa-th"></i>
+                    <span>其他管理</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu" th:style="${active}=='true'?'display: block;':''">
+                    <li>
+                        <a href="/admin/comments"><i class="fa fa-comments"></i>评论管理</a>
+                    </li>
+                    <li>
+                        <a href="/admin/category"><i class="fa fa-tags"></i>分类/标签</a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)"><i class="fa fa-hashtag"></i>编辑模板</a>
+                    </li>
+                </ul>
+            </li>
+            <li th:class="${active}=='setting'?'active':''">
+                <a href="/admin/setting"><i class="fa fa-gear"></i>
+                    <span>系统设置</span>
+                </a>
+            </li>
+        </ul>
+        <!-- /.sidebar-menu -->
+    </section>
+    <!-- /.sidebar -->
+</aside>
+</body>
+</html>

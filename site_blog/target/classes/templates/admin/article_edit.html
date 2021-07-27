@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="admin/header::header"></div>
+<body class="skin-black-light sidebar-mini">
+<!--<link rel="stylesheet" href="https://unpkg.com/mditor@1.0.5/dist/css/mditor.min.css" />-->
+<link rel="stylesheet" th:href="@{~/admin/css/mditor.min.css}" />
+<style type="text/css">
+    .col-sm-12 mditor split{
+        height: 650px;
+    }
+</style>
+<div class="wrapper">
+    <!--头-->
+    <div th:replace="admin/sidebar::sidebar"></div>
+    <!-- 内容页 -->
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h3>
+                <th:block th:if="${null != contents}">
+                    编辑文章
+                </th:block>
+                <th:block th:unless="${null != contents}">
+                    发布文章
+                </th:block>
+            </h3>
+            <!--<ol class="breadcrumb">-->
+            <!--<li><a href="#"><i class="fa fa-dashboard"></i> </a></li>-->
+            <!--<li class="active">Dashboard</li>-->
+            <!--</ol>-->
+        </section>
+        <section class="content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box box-info">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">信息</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <!-- form start -->
+                        <form id="articleForm" class="form-horizontal">
+                            <div class="box-body">
+                                <input type="hidden" name="cid"
+                                       th:value="${contents!=null and contents.cid!=null}?${contents.cid}: ''" id="cid"/>
+                                <input type="hidden" name="status"
+                                       th:value="${contents!=null and contents.status !=null}?${contents.status}: 'publish'"
+                                       id="status"/>
+                                <input type="hidden" name="allowComment"
+                                       th:value="${contents!=null and contents.allowComment !=null}?${contents.allowComment}: '1'"
+                                       id="allow_comment"/>
+                                <input type="hidden" name="allowPing"
+                                       th:value="${contents!=null and contents.allowPing !=null}?${contents.allowPing}: '1'"
+                                       id="allow_ping"/>
+                                <input type="hidden" name="allowFeed"
+                                       th:value="${contents!=null and contents.allowFeed !=null}?${contents.allowFeed}: '1'"
+                                       id="allow_feed"/>
+                                <input type="hidden" name="content" id="content-editor"/>
+                                <div class="form-group">
+                                    <label for="title" class="col-sm-2 control-label">文章标题：</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" th:value="${contents!=null and contents.title!=null }?${contents.title}: ''"
+                                               class="form-control" name="title" id="title" placeholder="请输入文章标题">
+                                    </div>
+                                    <label for="tags" class="col-sm-2 control-label">文章标签：</label>
+
+                                    <div class="col-sm-4">
+                                        <input type="text" th:value="${contents!=null and contents.tags !=null}?${contents.tags}: ''"
+                                               class="form-control" name="tags" id="tags" placeholder="请输入文章标签">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="slug" class="col-sm-2 control-label">访问路径：</label>
+                                    <div class="col-sm-4">
+                                        <input type="text"
+                                               class="form-control" name="slug" id="slug"
+                                               placeholder="自定义访问路径，如：my-first-article  默认为文章id"
+                                               th:value="${contents!=null and contents.slug !=null}?${contents.slug}: ''">
+                                    </div>
+
+                                    <label for="categories" class="col-sm-2 control-label">文章类型：</label>
+                                    <div class="col-sm-4">
+                                        <select class="form-control" id="categories" name="categories">
+                                            <th:block th:if="${null == contents}">
+                                                <option value="默认分类" selected="selected">默认分类</option>
+                                                <th:block th:each="c : ${categories}">
+                                                    <option th:value="${c.name}" th:text="${c.name}"></option>
+                                                </th:block>
+                                            </th:block>
+                                            <th:block th:unless="${null == contents}">
+                                                <th:block th:each="c : ${categories}">
+                                                    <option th:value="${c.name}" th:text="${c.name}"
+                                                            th:selected="${null !=contents and contents.categories==c.name}?true:false"></option>
+                                                </th:block>
+                                            </th:block>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="checkbox col-sm-3">
+                                        <label>
+                                            <input type="checkbox" name="bt" id="comment" onclick="allowcomment()" th:checked="${contents!=null and contents.allowComment == 0}?false:true">
+                                            开启评论：
+                                        </label>
+                                    </div>
+                                    <div class="checkbox col-sm-3">
+                                        <label>
+                                            <input type="checkbox" name="ping" id="ping" onclick="allowping()" th:checked="${contents!=null and contents.allowPing == 0}?false:true">
+                                            允许Ping
+                                        </label>
+                                    </div>
+                                    <div class="checkbox col-sm-3">
+                                        <label>
+                                            <input type="checkbox" name="rss" id="rss" onclick="allowfeed()" th:checked="${contents!=null and contents.allowFeed == 0}?false:true">
+                                            允许订阅
+                                        </label>
+                                    </div>
+                                    <div class="checkbox col-sm-3">
+                                        <label>
+                                            <input type="checkbox" id="pic" th:checked="${contents!=null and contents.allowComment!=null}?true:false">
+                                            添加缩略图
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <textarea id="md_editor" th:utext="${contents!=null and contents.content !=null}?${contents.content}: ''"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.box-body -->
+                            <div class="box-footer">
+                                <input type="button" th:style="${contents==null?'display: none':''}" onclick="returnMenu()" value="返回列表" class="btn btn-default"/>
+                                <input type="button" onclick="subArticle('publish')" value="保存文章" class="btn btn-primary pull-right"/>
+                                <input type="button" onclick="subArticle('draft')" value="存为草稿" class="btn btn-danger pull-right"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <!-- 底部 -->
+    <div th:replace="admin/footer::footer"></div>
+</div>
+</body>
+<script th:src="@{~/admin/js/mditor.min.js}"></script>
+<script th:src="@{~/admin/js/article.js}"></script>
+<script>
+
+</script>
+</html>

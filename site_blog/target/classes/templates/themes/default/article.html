@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="partial/header::header" ></div>
+<body>
+<article class="main-content page-page" itemscope itemtype="http://schema.org/Article">
+    <div class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            <a th:href="${commons.permalink(article)}" th:text="${article.title}" data-no-instant=""></a>
+        </h1>
+        <div class="post-data">
+            <time th:datetime="${commons.fmtdate(article.created)}"  itemprop="datePublished" th:text="'发布于 '+ ${commons.fmtdate(article.created)}"></time>
+            / <th:block th:utext="${commons.show_categories(article.categories)}"/> / <a href="#comments" th:text="${article.commentsNum ?: 0}+' 条评论'"></a> /
+            <th:block th:text="${article.hits}"/>浏览
+        </div>
+    </div>
+    <div id="post-content" class="post-content" itemprop="articleBody">
+        <p class="post-tags" th:utext="${commons.show_tags(article.tags)}"></p>
+        <th:block th:utext="${commons.article(article.content)}"/>
+        <p class="post-info">
+            本站文章除注明转载/出处外，均为本站原创或翻译，转载前请务必署名,转载请标明出处<br/>最后编辑时间为:
+            <th:block th:text="${commons.fmtdate(article.modified, 'yyyy/MM/dd HH:mm')}"/>
+        </p>
+    </div>
+</article>
+<div id="post-bottom-bar" class="post-bottom-bar">
+    <div class="bottom-bar-inner">
+        <div class="bottom-bar-items social-share left">
+            <span class="bottom-bar-item">Share : </span>
+            <span class="bottom-bar-item bottom-bar-facebook">
+                <a th:href="'https://www.facebook.com/sharer/sharer.php?u='+${commons.permalink(article)}" target="_blank" th:title="${title}" rel="nofollow">facebook</a></span>
+            <span class="bottom-bar-item bottom-bar-twitter">
+                <a th:href="'https://twitter.com/intent/tweet?url='+${commons.site_url()}+'&amp;text='+${title ?: '首页'}+' - '+${commons.site_title()}" target="_blank" th:title="${title}" rel="nofollow">Twitter</a></span>
+            <span class="bottom-bar-item bottom-bar-weibo">
+                <a th:href="'http://service.weibo.com/share/share.php?url='+${commons.site_url()}+'&amp;title='+${title ?: '首页'}+' - '+${commons.site_title()}" target="_blank" th:title="${title}" rel="nofollow">Weibo</a></span>
+            <span class="bottom-bar-item bottom-bar-qrcode">
+                <a th:href="'http://qr.liantu.com/api.php?text='+${commons.permalink(article)}" target="_blank" rel="nofollow">QRcode</a></span>
+        </div>
+        <div class="bottom-bar-items right">
+            <span class="bottom-bar-item"><a href="#footer">↓</a></span>
+            <span class="bottom-bar-item"><a th:href="${commons.thePrev(article.cid)}">←</a></span>
+            <span class="bottom-bar-item"><a th:href="${commons.theNext(article.cid)}">→</a></span>
+            <span class="bottom-bar-item"><a href="#">↑</a></span>
+        </div>
+    </div>
+</div>
+</body>
+<div th:replace="partial/comments::comments" ></div>
+<div th:replace="partial/footer::footer" ></div>
+</html>
